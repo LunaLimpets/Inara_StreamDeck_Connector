@@ -28,23 +28,7 @@ This collection of Python scripts designed for the Elgato Stream Deck pulls data
 4. **Navigate to Project Directory**:
     - Open your CMD prompt and Navigate to the project directory.
    
-5. **Create a Virtual Environment (venv)**:
-    - It's recommended to have a specific env for each Python project.
-    - Navigate to the project directory.
-    - Run the following command to create the venv:
-        ```
-        python -m venv InaraStreamDeck
-        ```
-    - For Windows:
-        ```
-        InaraStreamDeck\Scripts\activate
-        ```
-    - For macOS/Linux:
-        ```
-        source InaraStreamDeck/bin/activate
-        ```
-
-6. **Install project requirements from requirements.txt**:
+5. **Install project requirements from requirements.txt**:
     ```
     pip install -r requirements.txt
     ```
