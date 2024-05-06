@@ -14,7 +14,7 @@ This collection of Python scripts designed for the Elgato Stream Deck pulls data
 ## Instructions
 
 1. **Download**: 
-    - Download from the [releases tab](link-to-releases), extract to a folder of your choosing.
+    - Download from the [releases tab](https://github.com/LunaLimpets/Inara_StreamDeck_Connector/releases), extract to a folder of your choosing.
    
 2. **Download and Install Python**:
     - [Python Download](https://www.python.org/downloads/)
