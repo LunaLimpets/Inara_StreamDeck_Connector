@@ -4,7 +4,7 @@
     "best_trade_routes_url_from__sol": "https://inara.cz/elite/market-traderoutes/?ps1=Sol&pi10=720&pi2=80&pi5=72&pi3=3&pi9=1000&pi4=1&pi7=1000&pi12=1000&pi1=4&pi8=1",
     "material_traders_url_from_sol" :  "https://inara.cz/elite/nearest-stations/?formbrief=1&ps1=Sol&pi13=&pi14=0&pi15=0&pi16=&pi1=0&pi18=3&pi19=5000&pi17=1&pa1%5B%5D=25&ps2=&pi25=0&pi8=&pi9=0&pi26=0&pi3=&pi4=0&pi5=0&pi7=0&pi23=0&pi6=0&ps3=&pi24=0",
     "favorite_commodity_from_home_url": "https://inara.cz/elite/commodities/?pi1=2&pa1%5B%5D=81&ps1=Atins&pi10=1&pi11=100&pi3=3&pi9=20000&pi4=0&pi5=24&pi12=0&pi7=500&pi8=0",
-    "trade_route_url" : "unused currently",
+
     "LONG_PRESS_THRESHOLD" : 1.0,
     "font_file" : "Roboto-Regular.ttf",
     "max_font_size" : 16,
@@ -18,7 +18,10 @@
     "text_color" : "white",
     "background_color" : "black",
 
+    "deck_brightness" : 30,
     "number_of_rows_UNTESTEDBEYONDTHREE" : 3,
-    
-    "deck_brightness" : 30
+
+    "releases_url" : "https://github.com/LunaLimpets/Inara_StreamDeck_Connector/releases",
+    "update_check" : "True",
+    "version" : "v0.8.0"
 }

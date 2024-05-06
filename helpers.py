@@ -13,6 +13,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 config_file_path = os.path.join(script_dir, "config.json")
 arrow_image_path = os.path.join(script_dir, "arrow.png")
 close_image_path = os.path.join(script_dir, "close.png")
+update_image_path = os.path.join(script_dir, "Update.png")
 
 with open(config_file_path, "r", encoding='utf-8') as config_file:
     config = json.load(config_file)

@@ -1,13 +1,13 @@
 import threading
 import time
+import webbrowser #Opening Link
 from PIL import Image, ImageDraw
 from StreamDeck.DeviceManager import DeviceManager
 from StreamDeck.ImageHelpers import PILHelper
 import requests
 from bs4 import BeautifulSoup
-from helpers import  center_align_strings, clip, clean, arrow_image_path, close_image_path, config
-
-
+from helpers import  center_align_strings, clip, clean, arrow_image_path, close_image_path, config, update_image_path
+from check_version import check_for_updates
 
 
 # Global variables
@@ -18,6 +18,7 @@ key_press_times = {}
 LONG_PRESS_THRESHOLD = config.get('LONG_PRESS_THRESHOLD', 1.0)
 IMAGE_WIDTH = 72
 IMAGE_HEIGHT = 72
+to_update = False
 
 def render_key_image(deck, info):
     # Info is a list of dictionaries
@@ -81,6 +82,8 @@ def key_change_callback(deck, key, state):
     global current_page
     if state:
         if key == 9: # select nothing
+            if to_update:
+                webbrowser.open(config.get("releases_url"))
             deck.close()
         elif key == 4:  # Previous page
             current_page = max(0, current_page - 1)
@@ -154,6 +157,8 @@ def extract_market_data():
 
 # Main function
 def main():
+    global to_update
+    to_update = check_for_updates(config)
     extract_market_data()
     streamdecks = DeviceManager().enumerate()
 
@@ -182,6 +187,13 @@ def main():
             Image.open(arrow_image_path).convert('RGB')))
         deck.set_key_image(14, PILHelper.to_native_key_format(deck,
             Image.open(arrow_image_path).convert('RGB').rotate(180)))
+
+        if to_update:
+                        deck.set_key_image(
+                9, PILHelper.to_native_key_format(
+                    deck, Image.open(update_image_path).convert('RGB')))
+        
+
 
         # Register key press functions
         deck.set_key_callback(key_change_callback)

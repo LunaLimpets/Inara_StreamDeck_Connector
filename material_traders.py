@@ -1,12 +1,13 @@
 import threading #Keybinding
 import time #Longpress detection
 import requests #Data Retreival
+import webbrowser #Opening Link
 from PIL import Image, ImageDraw, ImageFont #KeyImageGen
 from StreamDeck.DeviceManager import DeviceManager #Streamdeck connnection
 from StreamDeck.ImageHelpers import PILHelper #KeyImageGen
 from bs4 import BeautifulSoup #Data Extraction
-from helpers import get_current_system, font_path, get_font_size, center_text, left_align_array_strings, max_font_size, clip, clean, arrow_image_path, config
-
+from helpers import get_current_system, font_path, get_font_size, center_text, left_align_array_strings, max_font_size, clip, clean, arrow_image_path, config, update_image_path
+from check_version import check_for_updates
 
 
 
@@ -14,7 +15,7 @@ number_of_rows = config.get("number_of_rows_UNTESTEDBEYONDTHREE")
 LONG_PRESS_THRESHOLD = config.get("LONG_PRESS_THRESHOLD")
 key_press_times = {}
 system = None
-
+to_update = False
 
 # Global variables to track the current page and total number of pages
 current_page_raw = 0 # pylint: disable-msg=C0103
@@ -96,6 +97,8 @@ def key_change_callback(deck, key, state):
         key_press_times[key] = time.time()
         #print(key)
         if key == 0:  # prev page raw
+            if to_update:
+                webbrowser.open(config.get("releases_url"))  
             current_page_raw = max(0, current_page_raw - 1)
             update_keys(deck, raw_data, current_page_raw, 0)
         elif key == 4:  # Next Page Raw
@@ -213,6 +216,8 @@ def extract_materials_data():
 
 # Main function
 def main():
+    global to_update
+    to_update = check_for_updates(config)
     extract_materials_data()
 
     streamdecks = DeviceManager().enumerate()
@@ -247,6 +252,11 @@ def main():
                 i, PILHelper.to_native_key_format(
                     deck, Image.open(arrow_image_path).convert('RGB').rotate(270)))
 
+        if to_update:
+                        deck.set_key_image(
+                0, PILHelper.to_native_key_format(
+                    deck, Image.open(update_image_path).convert('RGB')))
+        
         # Register key press functions
         deck.set_key_callback(key_change_callback)
 

@@ -9,8 +9,8 @@ from StreamDeck.DeviceManager import DeviceManager #Streamdeck Connection
 from StreamDeck.ImageHelpers import PILHelper #KeyImageGen
 import requests #Data Retreival
 
-from helpers import get_current_station, get_current_system, font_path, get_font_size, max_font_size, clip, clean, arrow_image_path, close_image_path, config
-
+from helpers import get_current_station, get_current_system, font_path, get_font_size, max_font_size, clip, clean, arrow_image_path, close_image_path, config, update_image_path
+from check_version import check_for_updates
 
 MODE = sys.argv[1] if len(sys.argv) > 1 else 'nearest'
 
@@ -22,6 +22,7 @@ url = None
 current_page = int(0)
 trade_data = None
 total_pages = int(0)
+to_update = False
 
 def extract_pairs(result, pairs, index_one, index_two):
     # print(pairs)
@@ -325,7 +326,12 @@ def key_change_callback(deck, key, state):
             deck.reset()
             deck.close()
         elif key == 10:
-            webbrowser.open(url)
+            if to_update:
+                webbrowser.open(config.get("releases_url"))
+            else:
+                webbrowser.open(url)
+            deck.reset()
+            deck.close()
 
     else:  # Key released
         press_duration = time.time() - key_press_times.get(key, 0)
@@ -338,6 +344,8 @@ def key_change_callback(deck, key, state):
 
 # Main function
 def main():
+    global to_update
+    to_update = check_for_updates(config)
     get_trade_routes()
     print(f'Got {len(trade_data)} trades')
 
@@ -373,6 +381,13 @@ def main():
             deck, Image.open(arrow_image_path).convert('RGB')))
         deck.set_key_image(14, PILHelper.to_native_key_format(
             deck, Image.open(arrow_image_path).convert('RGB').rotate(180)))
+
+        if to_update:
+            deck.set_key_image(
+                10, PILHelper.to_native_key_format(
+                    deck, Image.open(update_image_path).convert('RGB')))
+        
+
 
         # Wait until all application threads have terminated
         for t in threading.enumerate():
