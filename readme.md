@@ -3,9 +3,9 @@
 
 This collection of Python scripts designed for the Elgato Stream Deck pulls data from inara.cz and your elite dangerous flight log to:
 - Get the Highest Price Exports for the station you are in.
-- Find Material Traders nearest to the system I'm in.
+- Find Material Traders nearest to the system you are in.
 - Find A commodity price Nearby your home station.
-- Partial Support for "Best" Trade routes
+- Partial Support for "Best" Trade routes.
 - Without opening a browser, the target systems are copied to the clipboard, for easy navigation.
 
 
