@@ -1,11 +1,11 @@
 
 ## Features
+- Request and display data from Inara.cz on your Stream Deck
 
 - Get the Highest Price Exports for the station you are in.
 - Find Material Traders nearest to the system you are in.
 - Find A commodity price Nearby your home station.
-- Partial Support for "Best" Trade routes.
-- Display the information on your Stream Deck
+- WIP Support for "Best" Trade routes.
 - Without opening a browser, the target systems are copied to the clipboard, with the press of a button.
 - Customizable Fonts, Colors
 - New Release Notification 
