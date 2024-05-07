@@ -8,7 +8,7 @@
 - WIP Support for "Best" Trade routes.
 - Without opening a browser, the target systems are copied to the clipboard, with the press of a button.
 - Customizable Fonts, Colors
-- New Release Notification 
+- New Release Notifications
 
 
 
