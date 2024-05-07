@@ -51,6 +51,7 @@ def count_items(input_list):
 
 
 def request_trade_routes(): #TODO ADD TESTING METHODS
+    global url
     system = get_current_system()
     station = get_current_station()
 
