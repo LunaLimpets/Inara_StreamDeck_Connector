@@ -103,6 +103,7 @@ def key_change_callback(deck, key, state):
             update_keys(deck, raw_data, current_page_raw, 0)
         elif key == 4:  # Next Page Raw
             current_page_raw = min(total_pages_raw, current_page_raw + 1)
+            print('current_page_raw:', current_page_raw)
             update_keys(deck, raw_data, current_page_raw, 0)
         if key == 5:  # prev page manufactured
             current_page_manufactured = max(0, current_page_manufactured - 1)
@@ -117,11 +118,11 @@ def key_change_callback(deck, key, state):
             current_page_encoded = min(total_pages_encoded - 1, current_page_encoded + 1)
             update_keys(deck, encoded_data, current_page_encoded, 2)
         elif 1<= key <=3:
-            info = raw_data[key_index - 1 + current_page_raw * 3]
+            info = raw_data[max(key_index, key_index + current_page_raw)-1]
         elif 6<= key <=8:
-            info = manufactured_data[key_index - 1 + current_page_manufactured * 3]
+            info = manufactured_data[max(key_index, key_index + current_page_manufactured)-1]
         elif 11<= key <=13:
-            info = encoded_data[key_index - 1 + current_page_encoded * 3]
+            info = encoded_data[max(key_index, key_index + current_page_encoded)-1]
         # Copy system to clipboard when system or station name is pressed
         if info:
             clip(info.get('system', ''))
@@ -253,10 +254,10 @@ def main():
                     deck, Image.open(arrow_image_path).convert('RGB').rotate(270)))
 
         if to_update:
-                        deck.set_key_image(
+            deck.set_key_image(
                 0, PILHelper.to_native_key_format(
                     deck, Image.open(update_image_path).convert('RGB')))
-        
+
         # Register key press functions
         deck.set_key_callback(key_change_callback)
 
