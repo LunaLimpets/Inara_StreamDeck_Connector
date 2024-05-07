@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-    
+
 def check_for_updates(config):
     if config['update_check'] == "True":
         version = config['version']
@@ -14,4 +14,3 @@ def check_for_updates(config):
                 return True
             else:
                 return False    
-
