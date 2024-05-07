@@ -5,22 +5,34 @@ import glob
 import re
 import pyperclip
 from PIL import ImageFont
+import sys
 
+
+def get_script_dir():
+    # Check if running as an executable
+    if getattr(sys, 'frozen', False):
+        # Running as an executable
+        return os.path.dirname(sys.executable)
+    else:
+        # Running as a script
+        return os.path.dirname(os.path.abspath(__file__))
+
+# Get the script directory
+script_dir = get_script_dir()
 
 #TODO ADD DOCSTRINGS
-
-script_dir = os.path.dirname(os.path.abspath(__file__))
 config_file_path = os.path.join(script_dir, "config.json")
-arrow_image_path = os.path.join(script_dir, "arrow.png")
-close_image_path = os.path.join(script_dir, "close.png")
-update_image_path = os.path.join(script_dir, "Update.png")
+arrow_image_path = os.path.join(script_dir, "src/arrow.png")
+close_image_path = os.path.join(script_dir, "src/close.png")
+update_image_path = os.path.join(script_dir, "src/Update.png")
 
 with open(config_file_path, "r", encoding='utf-8') as config_file:
     config = json.load(config_file)
 
 # Update image paths
 font_file = config.get('font_file')
-font_path = os.path.join(script_dir, font_file)
+font_path = os.path.join(script_dir, "src", font_file)
+print(font_path)
 max_font_size = config['max_font_size']
 
 def clip(text):
