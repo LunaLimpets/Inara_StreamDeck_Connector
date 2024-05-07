@@ -1,20 +1,30 @@
 
-## About
+## Features
 
-This collection of Python scripts designed for the Elgato Stream Deck pulls data from inara.cz and your elite dangerous flight log to:
 - Get the Highest Price Exports for the station you are in.
 - Find Material Traders nearest to the system you are in.
 - Find A commodity price Nearby your home station.
 - Partial Support for "Best" Trade routes.
-- Without opening a browser, the target systems are copied to the clipboard, for easy navigation.
+- Display the information on your Stream Deck
+- Without opening a browser, the target systems are copied to the clipboard, with the press of a button.
+- Customizable Fonts, Colors
+- New Release Notification 
 
 
 
 
 ## Instructions
+You can either use the exe files in the releases, or run the python files directly if you want to tinker.
+# Exe files:
+1. Download InaraStreamDeck.Zip from the  [releases tab](https://github.com/LunaLimpets/Inara_StreamDeck_Connector/releases) tab
+2. Extract to a folder of you choosing.
+3. [Go to Configuration](#config)
+
+
+# Python Files 
 
 1. **Download**: 
-    - Download from the [releases tab](https://github.com/LunaLimpets/Inara_StreamDeck_Connector/releases), extract to a folder of your choosing.
+    - Download from the [releases tab](https://github.com/LunaLimpets/Inara_StreamDeck_Connector/releases), or clone the repository
    
 2. **Download and Install Python**:
     - [Python Download](https://www.python.org/downloads/)
@@ -34,16 +44,14 @@ This collection of Python scripts designed for the Elgato Stream Deck pulls data
     ```
 
 
-
-
-## Config Update
+<a name="config"></a>
+## Config.json Update
 
 - **Elite Savegamefolder Location**
 
      Update the path in config.json.
 
      Typically Located in : "C:/Users/username/Saved Games/Frontier Developments/Elite Dangerous/"
-
 
 
 - **URL Updates**
@@ -61,10 +69,10 @@ This collection of Python scripts designed for the Elgato Stream Deck pulls data
 
 Currently, there are four functions:
 
-- **favorite_commodity.py**
-- **material_traders.py**
-- **trade_routes.py nearest**
-- **trade_routes.py best**
+- **favorite_commodity** 
+- **material_traders**
+- **trade_routes nearest**
+- **trade_routes best** (WIP)
 
 I recommend creating two profiles:
 
@@ -79,18 +87,25 @@ You can name them as you prefer. In these profiles:
 - Optionally, add a "Loading" title to one of your buttons.
 
 
-Adding the functions:
+**Adding the functions**:
 
 In your Elite Dangerous profile or wherever you want to call these functions from:
 
 - Create a multi-action button. 
-    - The first action should be Navigation:Switch Profile (Target is either "ED Material Select" or "ED Trade Routes"). 
-    - The second action should be System Open:
+    - The first action should be "Navigation:Switch Profile" (Target is either "ED Material Select" or "ED Trade Routes"). 
+    - The second action should be "System Open" your chosen script out of the following:
+
+        If you chose the exe files
+        ```
+        "C:\Your\Path\to\ProjectFolder\favorite_commodity.exe"
+        "C:\Your\Path\to\ProjectFolder\material_traders.exe"
+        "C:\Your\Path\to\ProjectFolder\trade_routes.exe" nearest
+        "C:\Your\Path\to\ProjectFolder\trade_routes.exe" best
+        ```
+
+        If you chose the python files
         ```
         C:\Your\Path\To\Pythonw.exe C:\Your\Path\to\ProjectFolder\favorite_commodity.py
-        ```
-        The other functions are called like
-        ```
         C:\Your\Path\To\Pythonw.exe C:\Your\Path\to\ProjectFolder\material_traders.py
         C:\Your\Path\To\Pythonw.exe C:\Your\Path\to\ProjectFolder\trade_routes.py nearest
         C:\Your\Path\To\Pythonw.exe C:\Your\Path\to\ProjectFolder\trade_routes.py best
@@ -100,7 +115,7 @@ In your Elite Dangerous profile or wherever you want to call these functions fro
 
 Customize the style and name of your multi-actions, and you're good to go. 
 
-Feel free to customize your experience in the config.json file or anywhere else.
+Feel free to customize your experience in the config.json file, src folder, or anywhere else.
 
 Please use the "Issues" tab to report any problems or to request new features.
 
