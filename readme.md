@@ -21,6 +21,9 @@ You can either use the exe files in the releases, or run the python files direct
 3. [Go to Configuration](#config)
 
 
+# HID Backend 
+Follow the instructions for your operating system [here](https://python-elgato-streamdeck.readthedocs.io/en/stable/pages/backend_libusb_hidapi.html).
+
 # Python Files 
 
 1. **Download**: 
