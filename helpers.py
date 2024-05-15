@@ -24,6 +24,7 @@ config_file_path = os.path.join(script_dir, "config.json")
 arrow_image_path = os.path.join(script_dir, "src/arrow.png")
 close_image_path = os.path.join(script_dir, "src/close.png")
 update_image_path = os.path.join(script_dir, "src/Update.png")
+failed_image_path = os.path.join(script_dir, "src/NoTrades.png")
 
 with open(config_file_path, "r", encoding='utf-8') as config_file:
     config = json.load(config_file)
