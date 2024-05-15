@@ -23,5 +23,6 @@
 
     "releases_url" : "https://github.com/LunaLimpets/Inara_StreamDeck_Connector/releases",
     "update_check" : "True",
-    "version" : "0.9.2"
+    "version" : "0.9.2",
+    "debug" : 0
 }
