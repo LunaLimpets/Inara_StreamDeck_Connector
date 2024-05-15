@@ -4,3 +4,4 @@ create_update_image.py
 /dist
 /build
 *.spec
+build.sh
