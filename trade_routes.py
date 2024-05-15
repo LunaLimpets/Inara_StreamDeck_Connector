@@ -8,9 +8,13 @@ from PIL import Image, ImageDraw, ImageFont #KeyImageGen
 from StreamDeck.DeviceManager import DeviceManager #Streamdeck Connection
 from StreamDeck.ImageHelpers import PILHelper #KeyImageGen
 import requests #Data Retreival
-
-from helpers import get_current_station, get_current_system, font_path, get_font_size, max_font_size, clip, clean, arrow_image_path, close_image_path, config, update_image_path
 from check_version import check_for_updates
+from helpers import get_current_station, get_current_system, font_path, get_font_size, max_font_size
+from helpers import arrow_image_path, close_image_path, failed_image_path, update_image_path
+from helpers import config, clip, clean
+DEBUG_MODE = bool(config.get("debug"))
+if DEBUG_MODE:
+    from helpers import test_data, TestDataRequestTypes
 
 MODE = sys.argv[1] if len(sys.argv) > 1 else 'nearest'
 
@@ -50,40 +54,43 @@ def count_items(input_list):
     return count
 
 
-def request_trade_routes(): #TODO ADD TESTING METHODS
+def request_trade_routes():
     global url
     system = get_current_system()
+    # print(f"current system: {system}")
     station = get_current_station()
+    # print(f"current station: {station}")
 
     systemurl = f'%5B{system.replace(" ", "+")}%5D'
     stationurl = station.replace(" ", "+")
 
-    #print(MODE)
+    # print(f"Mode: {MODE}")
     if MODE == 'nearest':
         url_with_settings = config.get("nearest_trade_routes_url_from__titan_city_sol")
         url = url_with_settings.replace("Titan+City+%5BSol%5D",f"{stationurl}+{systemurl}")
-    else:
+    if MODE == 'best':
         url_with_settings = config.get("best_trade_routes_url_from__sol")
         url = url_with_settings.replace("Sol",f"{systemurl[3:-3]}")
-    # clip(url)
-
     response =  requests.get(url, timeout=10)
-    print(response.status_code)
+    # print(f"url:  {url}")
+    # print(f"response_code: {response.status_code}")
     if response.status_code == 200:
-        return response.text #TODO get testing data for both modes
+        return response.text
     else:
         return response.status_code
-
 
 
 def get_trade_routes():
     results = []
     global trade_data
     global total_pages
-
-
-    #print(response.status_code)
-    trade_route_response = request_trade_routes()
+    if DEBUG_MODE:
+        if MODE == 'nearest':
+            trade_route_response =  test_data(TestDataRequestTypes.TRADE_EXPORT)['response_html']
+        if MODE == 'best':
+            trade_route_response =  test_data(TestDataRequestTypes.TRADE_BEST)['response_html']
+    else:
+        trade_route_response = request_trade_routes()
 
     soup = BeautifulSoup(trade_route_response, features="lxml")
     # divs = soup.find_all('div')
@@ -91,13 +98,20 @@ def get_trade_routes():
         divs = soup.find_all('div', {'class':"mainblock traderoutebox taggeditem"})
     if MODE == 'best':
         divs = soup.find_all('div', {'class':"mainblock traderoutebox"})
-    #print(len(divs))
-    try: #TODO update best info extraction
-        while len(results) < 15:
-            for div in divs:
-                # print(div)
+
+    # print(f"total trades: {len(divs)}")
+    try:
+        done = False
+        while len(results) < 15 and not done:
+            for index, div in enumerate(divs):
+                # clip(div)
+                if DEBUG_MODE and index == 2:
+                    done = True
+                if index == len(divs) - 1:
+                    done = True
                 station_one_info = div.text.split("|")
-                system_one = re.findall(r'\b\w+(?:\s+\w+)*\b', station_one_info[1][:-2].strip())[0]
+                # print(station_one_info)
+                system_one = re.findall(r'\b[\w-]+(?:\s+[\w-]+)*\b', station_one_info[1][:-2].strip())[0]
                 trade_type = re.findall(r'\b(?:To|From)\b', station_one_info[0])
                 station_one = re.findall(r'\b\w+(?:\s+\w+)*\b',
                                          station_one_info[0].strip())[0][len(
@@ -113,9 +127,10 @@ def get_trade_routes():
                     'system' : system_one,
                     'trade_type' : trade_type,
                 }
+                # print(f"station one data: {station_one_data}")
 
                 item_pairs = div.find_all('div', {'class': 'itempaircontainer'})
-                #print('num of items: ', len(item_pairs))
+                # print('num of items: ', len(item_pairs))
                 if len(item_pairs) != 13:
                     trade_type = "round trip"
 
@@ -133,7 +148,7 @@ def get_trade_routes():
 
                 trade_type_two = station_two_info[1][len(system_one):].split(" ")[0]
                 # print('trade_type_two', trade_type_two)
-                system_two = station_two_info[2].split("S")[0].strip()
+                system_two = station_two_info[2].split("Station")[0].strip()
                 # print(system_two)
 
                 station_two_data = {
@@ -155,18 +170,18 @@ def get_trade_routes():
                     extract_pairs(station_one_data, item_pairs, 0, 4)
                     extract_pairs(station_two_data, item_pairs, 4, 8)
                     extract_pairs(route_data, item_pairs, 8, -1)
-                # print(station_one_data)
+                # printstation_one_data)
 
-                # print(station_two_data)
+                # printstation_two_data)
 
                 # clip(div)
                 profit_per_hour = div.find_all(
                     'div', {'class':"itempairvalue itempairvalueright"})[-1].text
                 route_data['profit_per_hour'] = profit_per_hour
                 # print('profit_per_hour: ', profit_per_hour)
-                # print(station_one_data)
-                # print(station_two_data)
-                # print(route_data)
+                # printstation_one_data)
+                # printstation_two_data)
+                # printroute_data)
                 # clip(route_data)
 
                 result = [
@@ -194,16 +209,18 @@ def get_trade_routes():
 
                 ]
                 if result[6] == ['Buy', '-', {'Supply': '-'}]:
-                    #print("++"*16)
-                    #print(result[6], result[7], result[-4], result[-3])
+                    # print("++"*16)
+                    # print(result[6], result[7], result[-4], result[-3])
                     result[6], result[-4] = result[-4], result[6]
                     result[7], result[-3] = result[-3], result[7]
                     result[-4] = ['Buy', '-',{ 'Supply': '-'}]
                     result[-3] = ['Sell', '-',{ 'Demand': '-'}]
-                    #print(result[6], result[7], result[-4], result[-3])
-                    #print("++"*16)
-                #print("**"*10)
-                #print(f'adding {MODE} {trade_type}')
+                    # print(result[6], result[7], result[-4], result[-3])
+                    # print("++"*16)
+                # print("**"*10)
+                # print(f'adding {MODE} {trade_type}')
+                # print(f'result: {result}')
+                # print("**"*10)
                 if MODE == "nearest":
                     if trade_type == 'round trip' or trade_type_two == 'To':
                         results.append(result)
@@ -212,8 +229,6 @@ def get_trade_routes():
     except IndexError as e:
         print('collection failed')
         print(e)
-
-    # clip(results)
     trade_data = results
     total_pages = len(trade_data)
     return True
@@ -348,7 +363,7 @@ def main():
     global to_update
     to_update = check_for_updates(config)
     get_trade_routes()
-    print(f'Got {len(trade_data)} trades')
+    # print(f'Got {len(trade_data)} trades')
 
 
     streamdecks = DeviceManager().enumerate()
@@ -370,11 +385,8 @@ def main():
 
         # Register key press functions
         deck.set_key_callback(key_change_callback)
-        # Set the Initial data keys
-        update_keys_for_item_container(deck, trade_data[current_page][:5], 1)
-        update_keys_for_item_container(deck, trade_data[current_page][5:9], 2)
-        update_keys_for_item_container(deck, trade_data[current_page][10:], 3)
-
+        
+        
         # Set close and navigation buttons
         deck.set_key_image(9, PILHelper.to_native_key_format(
             deck, Image.open(close_image_path).convert('RGB')))
@@ -382,6 +394,16 @@ def main():
             deck, Image.open(arrow_image_path).convert('RGB')))
         deck.set_key_image(14, PILHelper.to_native_key_format(
             deck, Image.open(arrow_image_path).convert('RGB').rotate(180)))
+        
+        # Set the Initial data keys
+        if len(trade_data) > 1:
+            update_keys_for_item_container(deck, trade_data[current_page][:5], 1)
+            update_keys_for_item_container(deck, trade_data[current_page][5:9], 2)
+            update_keys_for_item_container(deck, trade_data[current_page][10:], 3)
+        else:
+            deck.set_key_image(9, PILHelper.to_native_key_format(
+            deck, Image.open(failed_image_path).convert('RGB')))
+
 
         if to_update:
             deck.set_key_image(
