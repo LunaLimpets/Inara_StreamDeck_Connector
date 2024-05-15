@@ -5,3 +5,4 @@ create_update_image.py
 /build
 *.spec
 build.sh
+test.py
