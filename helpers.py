@@ -1,12 +1,12 @@
-from unicodedata import normalize
 import json
 import os
 import glob
 import re
-import pyperclip
-from PIL import ImageFont
 import sys
-
+from enum import Enum
+from unicodedata import normalize
+from PIL import ImageFont
+import pyperclip
 
 def get_script_dir():
     # Check if running as an executable
@@ -20,7 +20,6 @@ def get_script_dir():
 # Get the script directory
 script_dir = get_script_dir()
 
-#TODO ADD DOCSTRINGS
 config_file_path = os.path.join(script_dir, "config.json")
 arrow_image_path = os.path.join(script_dir, "src/arrow.png")
 close_image_path = os.path.join(script_dir, "src/close.png")
@@ -28,6 +27,9 @@ update_image_path = os.path.join(script_dir, "src/Update.png")
 
 with open(config_file_path, "r", encoding='utf-8') as config_file:
     config = json.load(config_file)
+
+
+
 
 # Update image paths
 font_file = config.get('font_file')
@@ -162,3 +164,50 @@ def get_current_station():
             # print('nothing found')
             pass
     return station
+
+
+class TestDataRequestTypes(Enum):
+    TRADE_BEST = "trade_best"
+    TRADE_EXPORT = "trade_nearest"
+    MATERIAL_TRADERS = "materials"
+    FAVORITE_COMMODITY = "commodity"
+
+
+DEBUG_MODE = bool(config.get("debug"))
+if DEBUG_MODE:
+    from test_data import trade_route_html, trade_route_best_div_0, trade_route_to_keys
+    from test_data import material_traders_html, trade_route_best_html
+    from test_data import raw_data_to_keys, encoded_data_to_keys, manufactured_data_to_keys
+    from test_data import favorite_commodity_html, favorite_commodity_to_keys
+
+    def test_data(test_data_request_type: TestDataRequestTypes):
+        match test_data_request_type:
+            case TestDataRequestTypes.TRADE_BEST:
+                trade_routes = {
+                    "response_html" : trade_route_best_html,
+                    "div0" : trade_route_best_div_0,
+                    "to_keys" : trade_route_to_keys
+                }
+                return trade_routes
+            case TestDataRequestTypes.TRADE_EXPORT:
+                trade_routes = {
+                    'response_html' : trade_route_html,
+                    "to_keys" : trade_route_to_keys               
+                }
+                return trade_routes
+            case TestDataRequestTypes.MATERIAL_TRADERS:
+                materials = {
+                    'response_html' : material_traders_html,
+                    'to_keys' : {
+                        "raw" : raw_data_to_keys,
+                        "manufactured" : manufactured_data_to_keys,
+                        "encoded" : encoded_data_to_keys
+                    }
+                }
+                return materials
+            case TestDataRequestTypes.FAVORITE_COMMODITY:
+                commodity = {
+                    'response_html' : favorite_commodity_html,
+                    'to_keys' : favorite_commodity_to_keys
+                }
+                return commodity
