@@ -4,25 +4,27 @@
 
 - Get the Highest Price Exports for the station you are in.
 - Find Material Traders nearest to the system you are in.
-- Find A commodity price Nearby your home station.
-- Support for "Best" Trade routes.
+- Display the "Best" Trade routes near your location.
+- Find a commodity price Nearby your home station.
 - Without opening a browser, the target systems are copied to the clipboard, with the press of a button.
 - Customizable Fonts, Colors
-- New Release Notifications
+- New Release Notifications (Toggleable in config)
 
 
 
 
 ## Instructions
 You can either use the exe files in the releases, or run the python files directly if you want to tinker.
+
+# DLL Requirements 
+Follow the instructions for your operating system [here](https://python-elgato-streamdeck.readthedocs.io/en/stable/pages/backend_libusb_hidapi.html).
+
+
 # Exe files:
 1. Download InaraStreamDeck.Zip from the  [releases tab](https://github.com/LunaLimpets/Inara_StreamDeck_Connector/releases) tab
 2. Extract to a folder of you choosing.
 3. [Go to Configuration](#config)
 
-
-# HID Backend 
-Follow the instructions for your operating system [here](https://python-elgato-streamdeck.readthedocs.io/en/stable/pages/backend_libusb_hidapi.html).
 
 # Python Files 
 
